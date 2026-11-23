@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZOJO — Plateforme d'entraide entre porteurs de projets</title>
+  <meta name="description" content="ZOJO met en relation des porteurs de projets, créateurs, développeurs et étudiants motivés pour s'entraider et passer de l'idée à l'action.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome pour les icônes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    const EMAILJS_PUBLIC_KEY = "KQyMWgSsJblhcywxD";
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  </script>
+
+  <style>
+    /* ==========================================
+       1. VARIABLES & RESET
+       ========================================== */
+    :root {
+      --bg-color: #FAF8FC;
+      --surface-color: #FFFFFF;
+      --primary: #6C47FF;
+      --primary-hover: #5835E5;
+      --primary-light: #F0EBFF;
+      --dark-violet: #1A103C;
+      --text-main: #2D264B;
+      --text-muted: #6B658B;
+      --border-color: #E8E3F5;
+      --shadow-sm: 0 4px 20px rgba(108, 71, 255, 0.06);
+      --shadow-md: 0 10px 30px rgba(108, 71, 255, 0.12);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .font-heading {
+      font-family: 'Playfair Display', serif;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #FFF;
+      box-shadow: 0 4px 14px rgba(108, 71, 255, 0.3);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(108, 71, 255, 0.4);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    .section-padding {
+      padding: 100px 0;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 16px;
+      color: var(--dark-violet);
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto 60px;
+      font-size: 1.1rem;
+    }
+
+    /* ==========================================
+       2. BANDEAU DE DÉPART (TOP BANNER)
+       ========================================== */
+    .top-banner {
+      background-color: var(--dark-violet);
+      color: #FFF;
+      text-align: center;
+      padding: 10px 16px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      position: relative;
+      z-index: 1001;
+    }
+
+    /* ==========================================
+       3. HEADER & NAVIGATION
+       ========================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      background: rgba(250, 248, 252, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      border-bottom: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+
+    .header-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark-violet);
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      color: var(--primary);
+    }
+
+    .nav-desktop {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-desktop a {
+      font-weight: 500;
+      color: var(--text-main);
+      transition: var(--transition);
+    }
+
+    .nav-desktop a:hover {
+      color: var(--primary);
+    }
+
+    .burger-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--dark-violet);
+      cursor: pointer;
+    }
+
+    .nav-mobile {
+      display: none;
+      position: absolute;
+      top: 80px;
+      left: 0;
+      width: 100%;
+      background: var(--surface-color);
+      border-bottom: 1px solid var(--border-color);
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .nav-mobile.open {
+      display: flex;
+    }
+
+    /* ==========================================
+       4. HERO SECTION
+       ========================================== */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      line-height: 1.15;
+      color: var(--dark-violet);
+      margin-bottom: 24px;
+    }
+
+    .hero p.hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 60px;
+      flex-wrap: wrap;
+    }
+
+    .hero-beta-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: -32px auto 40px;
+      max-width: 600px;
+      justify-content: center;
+      text-align: left;
+    }
+
+    .hero-beta-note i {
+      color: var(--primary);
+    }
+
+    .hero-benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .benefit-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      padding: 32px 24px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      text-align: left;
+    }
+
+    .benefit-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--primary-light);
+      box-shadow: var(--shadow-md);
+    }
+
+    .benefit-card .icon-box {
+      width: 50px;
+      height: 50px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin-bottom: 20px;
+    }
+
+    .benefit-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      color: var(--dark-violet);
+    }
+
+    .benefit-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* ==========================================
+       5. POURQUOI J'AI CRÉÉ ZOJO
+       ========================================== */
+    .founder-section {
+      background: var(--surface-color);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .founder-wrapper {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 48px;
+      align-items: center;
+      background: var(--bg-color);
+      padding: 48px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+    }
+
+    .founder-avatar-box {
+      text-align: center;
+    }
+
+    .founder-avatar {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      border: 4px solid var(--surface-color);
+      box-shadow: var(--shadow-sm);
+      color: var(--primary);
+      font-size: 4rem;
+    }
+
+    .founder-name {
+      font-weight: 700;
+      color: var(--dark-violet);
+    }
+
+    .founder-role {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .founder-content h2 {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      color: var(--dark-violet);
+    }
+
+    .founder-content p {
+      color: var(--text-main);
+      font-size: 1.05rem;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    /* ==========================================
+       6. COMMENT ÇA MARCHE
+       ========================================== */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .step-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      padding: 32px 24px;
+      border-radius: var(--radius-md);
+      position: relative;
+    }
+
+    .step-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-light);
+      position: absolute;
+      top: 16px;
+      right: 20px;
+    }
+
+    .step-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+      color: var(--dark-violet);
+      padding-right: 30px;
+    }
+
+    .step-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* ==========================================
+       7. POUR QUI ?
+       ========================================== */
+    .for-who-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .target-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      padding: 32px 24px;
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+
+    .target-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+    }
+
+    .target-card .icon-box {
+      width: 48px;
+      height: 48px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin-bottom: 20px;
+    }
+
+    .target-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--dark-violet);
+    }
+
+    .target-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* ==========================================
+       8. CANAUX
+       ========================================== */
+    .channels-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .channel-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .channel-card i {
+      font-size: 1.5rem;
+      color: var(--primary);
+      background: var(--primary-light);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .channel-card h3 {
+      font-size: 1.1rem;
+      color: var(--dark-violet);
+    }
+
+    /* ==========================================
+       8b. POURQUOI UNE BÊTA
+       ========================================== */
+    .beta-context-box {
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius-lg);
+      background: var(--surface-color);
+      padding: 56px 48px;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .beta-context-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--dark-violet);
+      color: #FFF;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .beta-context-box h2 {
+      font-size: 2rem;
+      color: var(--dark-violet);
+      margin-bottom: 16px;
+    }
+
+    .beta-context-box > p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 620px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    .beta-context-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      text-align: left;
+    }
+
+    .beta-context-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .beta-context-item i {
+      color: var(--primary);
+      font-size: 1.1rem;
+      margin-top: 3px;
+    }
+
+    .beta-context-item p {
+      color: var(--text-main);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    /* ==========================================
+       9. APRÈS LA BÊTA (EXPERTS)
+       ========================================== */
+    .after-beta-box {
+      background: linear-gradient(135deg, var(--dark-violet) 0%, #2A1B5E 100%);
+      color: #FFF;
+      border-radius: var(--radius-lg);
+      padding: 60px 40px;
+      text-align: center;
+      max-width: 850px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .after-beta-badge {
+      background: rgba(255, 255, 255, 0.15);
+      color: #FFF;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .after-beta-box h2 {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+    }
+
+    .after-beta-box p {
+      color: #D1C9EF;
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+
+    /* ==========================================
+       10. FORMULAIRE BÊTA
+       ========================================== */
+    .beta-section {
+      background: var(--primary-light);
+    }
+
+    .form-container {
+      background: var(--surface-color);
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-color);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      color: var(--dark-violet);
+    }
+
+    .form-group label .optional-tag {
+      font-weight: 400;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 1rem;
+      background: var(--bg-color);
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #FFF;
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .field-hint {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .checkbox-group {
+      margin-top: 24px;
+      margin-bottom: 24px;
+    }
+
+    .checkbox-group label.title {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 12px;
+      color: var(--dark-violet);
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .rgpd-box {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 24px;
+    }
+
+    .rgpd-box .checkbox-item {
+      margin-bottom: 0;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .form-footer-note {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .form-feedback {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-weight: 600;
+      display: none;
+    }
+
+    .form-feedback.visible {
+      display: block;
+    }
+
+    .form-feedback.success {
+      background: #ECFDF5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+    }
+
+    .form-feedback.error {
+      background: #FEF2F2;
+      color: #991B1B;
+      border: 1px solid #FECACA;
+    }
+
+    .form-feedback.info {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* ==========================================
+       11. FOOTER & MODALE LÉGALE
+       ========================================== */
+    .site-footer {
+      background: var(--dark-violet);
+      color: #FFF;
+      padding: 60px 0 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 32px;
+    }
+
+    .footer-brand {
+      max-width: 450px;
+    }
+
+    .footer-brand h2 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+
+    .footer-brand p {
+      color: #B2A7D8;
+      font-size: 0.95rem;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .social-links a {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFF;
+      transition: var(--transition);
+    }
+
+    .social-links a:hover {
+      background: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 24px;
+      color: #8C7FA8;
+      font-size: 0.875rem;
+    }
+
+    .footer-legal-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-legal-links button {
+      background: none;
+      border: none;
+      color: #B2A7D8;
+      font-family: inherit;
+      font-size: 0.875rem;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .footer-legal-links button:hover {
+      color: #FFF;
+    }
+
+    /* Modale Mentions Légales / RGPD */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 16, 60, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--surface-color);
+      color: var(--text-main);
+      max-width: 600px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      border-radius: var(--radius-md);
+      padding: 32px;
+      position: relative;
+      box-shadow: var(--shadow-md);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: var(--bg-color);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: var(--dark-violet);
+    }
+
+    .modal-card h3 {
+      font-size: 1.5rem;
+      color: var(--dark-violet);
+      margin-bottom: 16px;
+    }
+
+    .modal-card p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* ==========================================
+       12. RESPONSIVE
+       ========================================== */
+    @media (max-width: 992px) {
+      .hero-benefits-grid,
+      .steps-grid,
+      .for-who-grid,
+      .channels-grid,
+      .beta-context-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .founder-wrapper {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-desktop { display: none; }
+      .burger-btn { display: block; }
+      .hero h1 { font-size: 2.4rem; }
+      .hero-benefits-grid,
+      .steps-grid,
+      .for-who-grid,
+      .channels-grid,
+      .beta-context-grid,
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .beta-context-box { padding: 36px 24px; }
+      .form-container { padding: 24px; }
+      .footer-wrapper, .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BANDEAU FIXE TOP -->
+  <div class="top-banner">
+    🧪 Version bêta test — les 50 premiers membres auront un accès prioritaire aux futures fonctionnalités.
+  </div>
+
+  <!-- HEADER / NAV -->
+  <header class="site-header" id="site-header">
+    <div class="container header-wrapper">
+      <a href="#" class="logo">ZOJO<span>.</span></a>
+      
+      <nav class="nav-desktop">
+        <a href="#accueil">Accueil</a>
+        <a href="#comment-ca-marche">Comment ça marche</a>
+        <a href="#pour-qui">Pour qui ?</a>
+        <a href="#canaux">Canaux</a>
+        <a href="#beta-info">Pourquoi une bêta ?</a>
+        <a href="#beta" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">Rejoindre la bêta</a>
+      </nav>
+
+      <button class="burger-btn" id="burger" aria-label="Menu Mobile">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div class="nav-mobile" id="nav-mobile">
+      <a href="#accueil" class="nav-mobile-link">Accueil</a>
+      <a href="#comment-ca-marche" class="nav-mobile-link">Comment ça marche</a>
+      <a href="#pour-qui" class="nav-mobile-link">Pour qui ?</a>
+      <a href="#canaux" class="nav-mobile-link">Canaux</a>
+      <a href="#beta-info" class="nav-mobile-link">Pourquoi une bêta ?</a>
+      <a href="#beta" class="btn btn-primary nav-mobile-link">Rejoindre la bêta</a>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="accueil">
+    <div class="container hero-content">
+      <div class="badge">🧪 Version bêta • Accès sur invitation gratuite</div>
+      
+      <h1>Tu as un projet ? Ne le développe plus seul.</h1>
+      
+      <p class="hero-subtitle">
+        ZOJO met en relation des porteurs de projets ambitieux qui s’entraident concrètement pour lancer un business, coder un site, créer du contenu ou passer de l'idée à l'action.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#beta" class="btn btn-primary">Rejoindre la bêta gratuite →</a>
+        <a href="#comment-ca-marche" class="btn btn-outline">Voir comment ça marche</a>
+      </div>
+
+      <p class="hero-beta-note"><i class="fa-solid fa-flask"></i> Fonctionnement actuel : tu t'inscris ci-dessous et tu reçois ton accès privé (Discord & mise en relation personnalisée) sous 24h.</p>
+
+      <!-- 3 CARTES BÉNÉFICES -->
+      <div class="hero-benefits-grid">
+        <div class="benefit-card">
+          <div class="icon-box"><i class="fa-solid fa-users"></i></div>
+          <h3>Trouver des personnes au même stade</h3>
+          <p>Tu n’avances plus seul face à tes blocages techniques ou stratégiques.</p>
+        </div>
+
+        <div class="benefit-card">
+          <div class="icon-box"><i class="fa-solid fa-comments"></i></div>
+          <h3>Recevoir des conseils utiles</h3>
+          <p>Des retours directs entre pairs, loin des formations théoriques inutiles.</p>
+        </div>
+
+        <div class="benefit-card">
+          <div class="icon-box"><i class="fa-solid fa-rocket"></i></div>
+          <h3>Passer à l’action</h3>
+          <p>Des objectifs clairs et une dynamique collective pour exécuter chaque semaine.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION POURQUOI J'AI CRÉÉ ZOJO -->
+  <section class="section-padding founder-section">
+    <div class="container">
+      <div class="founder-wrapper">
+        <div class="founder-avatar-box">
+          <div class="founder-avatar">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div class="founder-name">Fondateur de ZOJO</div>
+          <div class="founder-role">Créateur de la communauté</div>
+        </div>
+        
+        <div class="founder-content">
+          <h2>Pourquoi j’ai créé ZOJO</h2>
+          <p>
+            J’ai souvent eu des idées sans savoir à qui demander de l’aide. Entre les vidéos contradictoires, les faux experts et le fait d’avancer seul, j’ai compris que beaucoup de porteurs de projets avaient surtout besoin d’un environnement où l’on peut poser une question, trouver quelqu’un qui a déjà vécu la même chose, et avancer ensemble.
+          </p>
+          <p>
+            C’est pour ça que je construis ZOJO : une plateforme d’entraide pour les personnes qui veulent vraiment passer de l’idée à l’action.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMENT ÇA MARCHE -->
+  <section class="section-padding" id="comment-ca-marche">
+    <div class="container">
+      <h2 class="section-title">Comment ça marche</h2>
+      <p class="section-subtitle">Un processus simple pensé pour l'action et le progrès rapide.</p>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <span class="step-number">01</span>
+          <h3>Tu présentes ton projet</h3>
+          <p>Indique ton domaine, ton stade d'avancement et le blocage précis que tu veux résoudre.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-number">02</span>
+          <h3>Tu rejoins l'espace privé</h3>
+          <p>Tu reçois sous 24h ton lien vers notre serveur privé et une première mise en relation avec des profils complémentaires.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-number">03</span>
+          <h3>Vous échangez et avancez ensemble</h3>
+          <p>Retours d'expérience, entraide sur vos tâches concrètes et points réguliers entre membres.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-number">04</span>
+          <h3>Tu progresses plus vite</h3>
+          <p>Le but n’est pas de discuter pendant des mois. Le but est de débloquer ton projet semaine après semaine.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POUR QUI ? -->
+  <section class="section-padding" id="pour-qui" style="background: #F4F0FA;">
+    <div class="container">
+      <h2 class="section-title">Pour qui ?</h2>
+      <p class="section-subtitle">ZOJO rassemble des profils complémentaires qui construisent concrètement quelque chose.</p>
+
+      <div class="for-who-grid">
+        <div class="target-card">
+          <div class="icon-box"><i class="fa-solid fa-briefcase"></i></div>
+          <h3>Entrepreneurs</h3>
+          <p>Tu lances une marque, un SaaS, un service ou une idée de business et tu cherches des retours terrain.</p>
+        </div>
+
+        <div class="target-card">
+          <div class="icon-box"><i class="fa-solid fa-play"></i></div>
+          <h3>Créateurs</h3>
+          <p>Tu développes une chaîne, une audience ou un média et tu veux structurer ta croissance.</p>
+        </div>
+
+        <div class="target-card">
+          <div class="icon-box"><i class="fa-solid fa-code"></i></div>
+          <h3>Développeurs & designers</h3>
+          <p>Tu construis des produits digitaux et tu veux collaborer ou échanger avec d'autres créateurs.</p>
+        </div>
+
+        <div class="target-card">
+          <div class="icon-box"><i class="fa-solid fa-graduation-cap"></i></div>
+          <h3>Étudiants bâtisseurs</h3>
+          <p>Tu développes un projet parallèle à tes études et tu veux passer de l'idée au lancement réel.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CANAUX -->
+  <section class="section-padding" id="canaux">
+    <div class="container">
+      <h2 class="section-title">Les canaux d'entraide</h2>
+      <p class="section-subtitle">Des espaces thématiques dédiés sur notre plateforme privée pour échanger sans bruit inutile.</p>
+
+      <div class="channels-grid">
+        <div class="channel-card">
+          <i class="fa-solid fa-chart-line"></i>
+          <h3>Business & Startups</h3>
+        </div>
+
+        <div class="channel-card">
+          <i class="fa-solid fa-video"></i>
+          <h3>Création de contenu</h3>
+        </div>
+
+        <div class="channel-card">
+          <i class="fa-solid fa-laptop-code"></i>
+          <h3>Développement web</h3>
+        </div>
+
+        <div class="channel-card">
+          <i class="fa-solid fa-palette"></i>
+          <h3>Design & Graphisme</h3>
+        </div>
+
+        <div class="channel-card">
+          <i class="fa-solid fa-rocket"></i>
+          <h3>Projets étudiants & Lancement</h3>
+        </div>
+
+        <div class="channel-card">
+          <i class="fa-solid fa-handshake"></i>
+          <h3>Recherche de binômes</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POURQUOI UNE BÊTA -->
+  <section class="section-padding" id="beta-info">
+    <div class="container">
+      <div class="beta-context-box">
+        <span class="beta-context-badge"><i class="fa-solid fa-flask"></i> Version bêta</span>
+        <h2>Ce site est un test, pas un produit fini</h2>
+        <p>
+          ZOJO en est à sa toute première version. L’objectif de cette bêta est simple : vérifier, avec les premiers membres, comment organiser les meilleures mises en relation avant de développer la plateforme complète.
+        </p>
+
+        <div class="beta-context-grid">
+          <div class="beta-context-item">
+            <i class="fa-solid fa-bug"></i>
+            <p>Des imperfections sont normales à ce stade — tes retours nous aident à tout ajuster.</p>
+          </div>
+          <div class="beta-context-item">
+            <i class="fa-solid fa-comments"></i>
+            <p>Ton avis compte réellement : il oriente les prochaines fonctionnalités.</p>
+          </div>
+          <div class="beta-context-item">
+            <i class="fa-solid fa-gift"></i>
+            <p>L’accès reste 100% gratuit pendant toute la phase de test.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APRÈS LA BÊTA -->
+  <section class="section-padding" style="background: #F4F0FA;">
+    <div class="container">
+      <div class="after-beta-box">
+        <span class="after-beta-badge">Bientôt</span>
+        <h2>Ce qui arrivera après la bêta</h2>
+        <p>
+          Dans un second temps, ZOJO permettra de recevoir l’aide de professionnels vérifiés — diplômes ou expérience contrôlés, entretien avant validation, avis vérifiés après chaque accompagnement : coachs, développeurs, designers, créateurs de contenu et entrepreneurs.<br><br>
+          Un abonnement optionnel donnera aussi accès à un assistant de suivi de projet, une mise en avant du profil, des mises en relation illimitées et des tarifs réduits chez les professionnels.<br><br>
+          Aujourd’hui, l’objectif reste de construire une communauté d’entraide solide et gratuite avant d’ajouter ces fonctionnalités.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULAIRE INSCRIPTION BÊTA -->
+  <section class="section-padding beta-section" id="beta">
+    <div class="container">
+      <h2 class="section-title">Rejoins les premiers membres de ZOJO</h2>
+      <p class="section-subtitle">L’inscription prend moins d’une minute. Tu recevras ton lien d'accès à l'espace privé par email ou Discord sous 24h.</p>
+
+      <div class="form-container">
+        <form id="beta-form" class="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prenom">Prénom *</label>
+              <input type="text" id="prenom" name="prenom" class="form-control" placeholder="Ton prénom" required>
+            </div>
+
+            <div class="form-group">
+              <label for="age">Âge *</label>
+              <input type="number" id="age" name="age" class="form-control" placeholder="Ton âge" min="18" max="99" required>
+              <p class="field-hint">Réservé aux 18 ans et plus.</p>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Adresse email *</label>
+              <input type="email" id="email" name="email" class="form-control" placeholder="ton.email@exemple.com" required>
+              <p class="field-hint">Pour t'envoyer ton invitation privée.</p>
+            </div>
+
+            <div class="form-group">
+              <label for="discord">Pseudo Discord <span class="optional-tag">(optionnel)</span></label>
+              <input type="text" id="discord" name="discord" class="form-control" placeholder="ex: pseudo#0000 ou @pseudo">
+              <p class="field-hint">Pour t'ajouter directement au serveur.</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="projet">Projet principal *</label>
+            <select id="projet" name="projet" class="form-control" required>
+              <option value="" disabled selected>Sélectionne ton domaine principal</option>
+              <option value="Business / marque">Business / marque</option>
+              <option value="Création de contenu">Création de contenu</option>
+              <option value="Développement web">Développement web</option>
+              <option value="Design / graphisme">Design / graphisme</option>
+              <option value="Projet étudiant / lancement">Projet étudiant / lancement</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="besoin">Ton projet et ton besoin actuel *</label>
+            <textarea id="besoin" name="besoin" class="form-control" placeholder="Décris rapidement où tu en es et ce qui te bloque aujourd'hui..." required></textarea>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="title">Tes attentes principales :</label>
+            
+            <label class="checkbox-item">
+              <input type="checkbox" name="attentes" value="Trouver des personnes au même stade que moi">
+              Trouver des personnes au même stade que moi
+            </label>
+
+            <label class="checkbox-item">
+              <input type="checkbox" name="attentes" value="Recevoir des conseils concrets">
+              Recevoir des conseils concrets
+            </label>
+
+            <label class="checkbox-item">
+              <input type="checkbox" name="attentes" value="Rester motivé et régulier">
+              Rester motivé et régulier
+            </label>
+
+            <label class="checkbox-item">
+              <input type="checkbox" name="attentes" value="Trouver des compétences complémentaires">
+              Trouver des compétences complémentaires
+            </label>
+          </div>
+
+          <!-- Champ caché qui regroupe les attentes cochées pour faciliter l'envoi EmailJS -->
+          <input type="hidden" id="attentes_resume" name="attentes_resume" value="">
+
+          <div class="rgpd-box">
+            <label class="checkbox-item">
+              <input type="checkbox" id="rgpd_consent" name="rgpd_consent" required>
+              <span>J'accepte que mes informations soient utilisées uniquement par ZOJO pour m'envoyer mon accès à la bêta et organiser les mises en relation. Aucune revente de données. *</span>
+            </label>
+          </div>
+
+          <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%;">Rejoindre la bêta gratuitement</button>
+          
+          <p class="form-footer-note">Aucun paiement demandé • Accès gratuit pendant la phase bêta • Désinscription sur simple demande</p>
+          
+          <div id="form-feedback" class="form-feedback" role="alert"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-wrapper">
+        <div class="footer-brand">
+          <h2>ZOJO — l’entraide pour ceux qui veulent vraiment avancer.</h2>
+          <p>Une communauté de porteurs de projets, de créateurs et d’étudiants qui s’aident à passer de l’idée à l’action.</p>
+        </div>
+
+        <div class="social-links">
+          <a href="#beta" aria-label="Instagram" title="Instagram ZOJO"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#beta" aria-label="TikTok" title="TikTok ZOJO"><i class="fa-brands fa-tiktok"></i></a>
+          <a href="#beta" aria-label="Discord" title="Discord ZOJO"><i class="fa-brands fa-discord"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 ZOJO. Tous droits réservés.</p>
+        <div class="footer-legal-links">
+          <button type="button" id="open-legal-btn">Mentions légales & Confidentialité (RGPD)</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODALE MENTIONS LÉGALES & RGPD -->
+  <div class="modal-overlay" id="legal-modal" aria-hidden="true">
+    <div class="modal-card">
+      <button type="button" class="modal-close" id="close-legal-btn" aria-label="Fermer">&times;</button>
+      <h3>Mentions légales & Politique de confidentialité</h3>
+      <p><strong>Éditeur du site :</strong> Projet ZOJO (Version Bêta).</p>
+      <p><strong>Données collectées :</strong> Prénom, âge, adresse email, pseudo Discord (optionnel) et description de projet, recueillis uniquement sur la base de ton consentement volontaire via le formulaire d'inscription à la bêta.</p>
+      <p><strong>Finalité :</strong> Envoi de l'invitation à l'espace communautaire privé et mise en relation pertinente avec d'autres membres de la bêta.</p>
+      <p><strong>Conservation et droits (RGPD) :</strong> Tes données ne sont ni vendues ni cédées à des tiers. Tu peux demander la consultation, la modification ou la suppression définitive de tes informations à tout moment en répondant à l'email d'invitation.</p>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    // 1. Menu mobile
+    const burger = document.getElementById('burger');
+    const navMobile = document.getElementById('nav-mobile');
+
+    burger.addEventListener('click', () => {
+      navMobile.classList.toggle('open');
+    });
+
+    document.querySelectorAll('.nav-mobile-link').forEach(link => {
+      link.addEventListener('click', () => {
+        navMobile.classList.remove('open');
+      });
+    });
+
+    // 2. Modale Mentions Légales / RGPD
+    const legalModal = document.getElementById('legal-modal');
+    const openLegalBtn = document.getElementById('open-legal-btn');
+    const closeLegalBtn = document.getElementById('close-legal-btn');
+
+    if (openLegalBtn && legalModal && closeLegalBtn) {
+      openLegalBtn.addEventListener('click', () => {
+        legalModal.classList.add('open');
+        legalModal.setAttribute('aria-hidden', 'false');
+      });
+
+      closeLegalBtn.addEventListener('click', () => {
+        legalModal.classList.remove('open');
+        legalModal.setAttribute('aria-hidden', 'true');
+      });
+
+      legalModal.addEventListener('click', (e) => {
+        if (e.target === legalModal) {
+          legalModal.classList.remove('open');
+          legalModal.setAttribute('aria-hidden', 'true');
+        }
+      });
+    }
+
+    // 3. Gestion du Formulaire avec EmailJS
+    const betaForm = document.getElementById('beta-form');
+    const formFeedback = document.getElementById('form-feedback');
+    const submitBtn = document.getElementById('submit-btn');
+
+    function showFeedback(message, type) {
+      formFeedback.textContent = message;
+      formFeedback.className = `form-feedback visible ${type}`;
+    }
+
+    if (betaForm) {
+      betaForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Vérification de l'âge minimum (18 ans)
+        const ageInput = document.getElementById('age');
+        if (ageInput && parseInt(ageInput.value, 10) < 18) {
+          showFeedback("La bêta est réservée aux personnes de 18 ans et plus, désolé.", "error");
+          return;
+        }
+
+        // Vérification email basique
+        const emailInput = document.getElementById('email');
+        if (!emailInput || !emailInput.value.includes('@')) {
+          showFeedback("Merci d'indiquer une adresse email valide pour recevoir ton accès.", "error");
+          return;
+        }
+
+        // Regroupement propre des cases à cocher dans le champ caché {{attentes_resume}}
+        const checkboxes = document.querySelectorAll('input[name="attentes"]:checked');
+        const attentesSelected = Array.from(checkboxes).map(cb => cb.value);
+        const attentesResumeInput = document.getElementById('attentes_resume');
+        if (attentesResumeInput) {
+          attentesResumeInput.value = attentesSelected.length > 0 ? attentesSelected.join(', ') : 'Aucune sélectionnée';
+        }
+
+        const serviceID = 'service_rjy03je';
+        const templateID = 'template_48k5kcd';
+
+        // Désactivation du bouton pendant l'envoi pour éviter les doubles inscriptions
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Envoi en cours...";
+        showFeedback("Inscription en cours...", "info");
+
+        emailjs.sendForm(serviceID, templateID, this)
+          .then(() => {
+            showFeedback("Félicitations ! Ton inscription est confirmée. Surveille ta boîte mail (ou Discord) sous 24h !", "success");
+            betaForm.reset();
+          })
+          .catch((err) => {
+            console.error('Erreur lors de l’envoi EmailJS :', err);
+            showFeedback("Oups, une erreur technique est survenue lors de l'envoi. Réessaie dans quelques instants.", "error");
+          })
+          .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Rejoindre la bêta gratuitement";
+          });
+      });
+    }
+  </script>
+</body>
+</html>
